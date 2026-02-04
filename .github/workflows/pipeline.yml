@@ -1,0 +1,106 @@
+name: Engine Predictive Maintenance MLOps Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Triggers on push to main branch
+
+jobs:
+  register-dataset:
+    name: Register Dataset to Hugging Face
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install Dependencies
+        run: pip install -r predictive_maintenance/requirements.txt
+      
+      - name: Upload Dataset to Hugging Face Hub
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python predictive_maintenance/model_building/data_register.py  
+
+  data-prep:
+    name: Data Preparation
+    needs: register-dataset
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install Dependencies
+        run: pip install -r predictive_maintenance/requirements.txt
+      
+      - name: Run Data Preparation
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python predictive_maintenance/model_building/prep.py
+        
+  upload-bulk-csv:
+    name: Upload Bulk CSV
+    needs: register-dataset
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install Dependencies
+        run: pip install -r predictive_maintenance/requirements.txt
+      
+      - name: Create and Upload Bulk CSV
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python predictive_maintenance/deployment/bulk_data_upload.py
+        
+  model-training:
+    name: Model Training & Model Hub Registration
+    needs: data-prep
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install Dependencies
+        run: pip install -r predictive_maintenance/requirements.txt
+      
+      - name: Train Model and Upload to Hugging Face Model Hub
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python predictive_maintenance/model_building/train.py  
+
+  deploy-hosting:
+    name: Deploy to Hugging Face Space
+    runs-on: ubuntu-latest
+    needs: [model-training, data-prep, register-dataset, upload-bulk-csv]
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install Dependencies
+        run: pip install -r predictive_maintenance/requirements.txt
+      
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python predictive_maintenance/hosting/hosting.py
