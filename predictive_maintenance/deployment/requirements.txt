@@ -1,0 +1,13 @@
+# Data manipulation
+pandas==2.2.2
+numpy==2.0.2
+
+# Machine learning (model inference only)
+scikit-learn==1.6.0
+joblib==1.5.1
+
+# Hugging Face model access
+huggingface_hub==0.32.6
+
+# Streamlit frontend
+streamlit==1.43.2

@@ -1,0 +1,19 @@
+# Core data & ML libraries
+pandas==2.2.2
+numpy==2.0.2
+scikit-learn==1.6.0
+joblib==1.5.1
+xgboost==2.1.4
+
+# Visualization
+matplotlib==3.8.4
+
+# Hugging Face Hub
+huggingface_hub==0.32.6
+datasets==3.2.0
+
+# Streamlit
+streamlit==1.43.2
+
+# Utilities
+python-dotenv==1.0.1
