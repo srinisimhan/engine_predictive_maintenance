@@ -23,6 +23,6 @@ COPY --chown=user . $HOME/app
 
 # Define the command to run the Streamlit app
 CMD ["streamlit", "run", "app.py", \
-     "--server.port=8501", \
+     "--server.port=7860", \  # changed from 8501 to 7860 to avoid conflict with hugging face
      "--server.address=0.0.0.0", \
      "--server.enableXsrfProtection=false"]
