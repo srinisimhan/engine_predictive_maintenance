@@ -92,7 +92,7 @@ engine_predictive_maintenance/
 * **Primary Metric**:
   * Recall-Faulty
 * **Reported Metrics:**
-  * ROC-AU, PR-AUC, F1-Score
+  * ROC-AUC and PR-AUC
   * Decision Threshold
 
 
